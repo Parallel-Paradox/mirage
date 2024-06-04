@@ -1,0 +1,6 @@
+# MacOS cache
+.DS_Store
+
+# Build cache
+/build
+/.idea
