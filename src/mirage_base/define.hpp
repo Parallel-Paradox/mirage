@@ -15,7 +15,7 @@
 #define MIRAGE_API
 #endif
 
-#if defined(DEBUG)
+#if defined(MIRAGE_BUILD_DEBUG)
 #define MIRAGE_DCHECK(condition) assert(condition)
 #else
 #define MIRAGE_DCHECK(condition) ((void)0)

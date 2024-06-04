@@ -13,8 +13,7 @@ endif ()
 
 option(MIRAGE_BUILD_SHARED "Build shared mirage engine" ON)
 
-set(SRC
-    src/mirage_framework/application.cpp)
+add_subdirectory(src/mirage_framework)
 if (MIRAGE_BUILD_SHARED)
   message("Building shared mirage engine...")
   add_library(mirage_engine SHARED ${SRC})
@@ -25,9 +24,9 @@ else ()
 endif ()
 
 if (CMAKE_BUILD_TYPE STREQUAL Debug)
-  target_compile_definitions(mirage_engine PUBLIC DEBUG)
+  target_compile_definitions(mirage_engine PUBLIC MIRAGE_BUILD_DEBUG)
 endif ()
-target_compile_definitions(mirage_engine PUBLIC MIRAGE_BUILD)
+target_compile_definitions(mirage_engine PRIVATE MIRAGE_BUILD)
 
 target_include_directories(mirage_engine PUBLIC src)
 

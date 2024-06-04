@@ -74,7 +74,7 @@ class Owned {
 
   T* Get() const { return raw_ptr_; }
 
-  bool IsNull() const { return raw_ptr_ == nullptr; }
+  [[nodiscard]] bool IsNull() const { return raw_ptr_ == nullptr; }
 
  private:
   T* raw_ptr_{nullptr};
