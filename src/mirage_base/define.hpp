@@ -1,7 +1,7 @@
 #ifndef MIRAGE_BASE_DEFINE
 #define MIRAGE_BASE_DEFINE
 
-#if defined(DEBUG)
+#if defined(MIRAGE_BUILD_DEBUG)
 #include <cassert>
 #endif
 

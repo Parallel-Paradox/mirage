@@ -14,6 +14,7 @@ endif ()
 option(MIRAGE_BUILD_SHARED "Build shared mirage engine" ON)
 
 add_subdirectory(src/mirage_framework)
+add_subdirectory(src/mirage_base)
 if (MIRAGE_BUILD_SHARED)
   message("Building shared mirage engine...")
   add_library(mirage_engine SHARED ${SRC})
