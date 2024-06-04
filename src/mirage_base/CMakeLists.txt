@@ -5,5 +5,6 @@ else ()
 endif ()
 
 set(SRC ${SRC}
+    src/mirage_base/auto_ptr/ref_count.cpp
     src/mirage_base/synchronize/lock.cpp
     PARENT_SCOPE)

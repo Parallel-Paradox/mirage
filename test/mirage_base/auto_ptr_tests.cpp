@@ -1,6 +1,9 @@
 #include <gtest/gtest.h>
 
+#include <thread>
+
 #include "mirage_base/auto_ptr/owned.hpp"
+#include "mirage_base/auto_ptr/ref_count.hpp"
 
 using namespace mirage;
 
@@ -96,4 +99,61 @@ TEST(AutoPtrTests, OwnedConvertBaseToDerive) {
   EXPECT_TRUE(base_from_derive.IsNull());
   EXPECT_FALSE(base_destructed);
   EXPECT_FALSE(derive_destructed);
+}
+
+TEST(AutoPtrTests, RefCountOps) {
+  EXPECT_TRUE(AsRefCount<RefCountLocal>);
+  EXPECT_TRUE(AsRefCount<RefCountAsync>);
+
+  auto checker = [](RefCount* count) {
+    EXPECT_EQ(count->GetCnt(), 0);
+
+    // Can't increase when cnt is 0
+    bool increase = count->TryIncrease();
+    EXPECT_FALSE(increase);
+    EXPECT_EQ(count->GetCnt(), 0);
+
+    // Release if cnt is already 0, cnt won't change
+    bool release = count->TryRelease();
+    EXPECT_TRUE(release);
+    EXPECT_EQ(count->GetCnt(), 0);
+
+    // Force to increase when cnt is 0
+    count->Increase();
+    EXPECT_EQ(count->GetCnt(), 1);
+
+    // Allowed to increase when cnt > 0
+    increase = count->TryIncrease();
+    EXPECT_TRUE(increase);
+    EXPECT_EQ(count->GetCnt(), 2);
+
+    // Decrease cnt, only release if cnt = 0 after decreased
+    release = count->TryRelease();
+    EXPECT_FALSE(release);
+    EXPECT_EQ(count->GetCnt(), 1);
+    release = count->TryRelease();
+    EXPECT_TRUE(release);
+    EXPECT_EQ(count->GetCnt(), 0);
+  };
+
+  RefCountLocal count_local;
+  checker(&count_local);
+
+  RefCountAsync count_async;
+  checker(&count_async);
+}
+
+TEST(AutoPtrTests, CountAsync) {
+  RefCountAsync count_async;
+  auto async_operation = [&count_async] {
+    for (int32_t i = 0; i < 10000; ++i) {
+      count_async.Increase();
+      count_async.TryIncrease();
+      count_async.TryRelease();
+    }
+  };
+  std::thread async_thread(async_operation);
+  async_operation();
+  async_thread.join();
+  EXPECT_EQ(count_async.GetCnt(), 20000);
 }
