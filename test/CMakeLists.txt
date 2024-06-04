@@ -16,5 +16,6 @@ enable_testing()
 include(GoogleTest)
 
 add_executable(test.mirage_base
-  mirage_base/auto_ptr_tests.cpp)
+    mirage_base/auto_ptr_tests.cpp
+    mirage_base/util_tests.cpp)
 gtest_discover_tests(test.mirage_base)
