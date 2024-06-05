@@ -1,8 +1,40 @@
 #include <gtest/gtest.h>
 
+#include "mirage_base/util/hash.hpp"
 #include "mirage_base/util/optional.hpp"
 
 using namespace mirage;
+
+namespace {
+
+struct Empty {};
+
+struct HashOnly {};
+
+struct EqHash {
+  bool operator==(const EqHash&) const { return true; }
+};
+
+}  // namespace
+
+template <>
+struct Hash<HashOnly> {
+  size_t operator()(const HashOnly&) { return 0; }
+};
+
+template <>
+struct Hash<EqHash> {
+  size_t operator()(const EqHash&) { return 0; }
+};
+
+TEST(UtilTests, HashConcept) {
+  EXPECT_FALSE(HashKeyType<Empty>);
+  EXPECT_FALSE(HashKeyType<HashOnly>);
+  EXPECT_TRUE(HashKeyType<EqHash>);
+
+  EXPECT_TRUE(HashKeyType<size_t>);
+  EXPECT_EQ(Hash<size_t>()(13), 13);
+}
 
 TEST(UtilTests, UnwrapOptional) {
   auto num = Optional<int32_t>::None();
