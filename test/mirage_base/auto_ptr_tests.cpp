@@ -42,14 +42,14 @@ TEST(AutoPtrTests, OwnedConstruct) {
   Owned<int32_t> raw_owned(&x, [](int32_t* ptr) { *ptr += 1; });
   owned = std::move(raw_owned);
   EXPECT_EQ(owned.Get(), &x);
-  EXPECT_TRUE(raw_owned.IsNull());
+  EXPECT_TRUE(raw_owned.IsNull());  // NOLINT
   raw_owned = nullptr;
   EXPECT_EQ(x, 0);  // Destructor won't be called since raw_owned is moved.
 
   // Move Construct
   Owned<int32_t> move_owned(std::move(owned));
   EXPECT_EQ(*move_owned, 0);
-  EXPECT_TRUE(owned.IsNull());
+  EXPECT_TRUE(owned.IsNull());  // NOLINT
   move_owned = nullptr;
   EXPECT_EQ(x, 1);  // Destructor will be called since move_owned is destructed.
 }
