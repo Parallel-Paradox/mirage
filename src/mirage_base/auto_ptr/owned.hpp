@@ -43,7 +43,7 @@ class Owned {
   }
 
   Owned& operator=(std::nullptr_t) {
-    this->~Owned();
+    Clear();
     return *this;
   }
 
@@ -63,9 +63,7 @@ class Owned {
   }
 
   ~Owned() {
-    destructor_(raw_ptr_);
-    raw_ptr_ = nullptr;
-    destructor_ = Destructor::Default<T>();
+    Clear();
   }
 
   T* operator->() const { return raw_ptr_; }
@@ -77,6 +75,12 @@ class Owned {
   [[nodiscard]] bool IsNull() const { return raw_ptr_ == nullptr; }
 
  private:
+  void Clear() {
+    destructor_(raw_ptr_);
+    raw_ptr_ = nullptr;
+    destructor_ = Destructor::Default<T>();
+  }
+
   T* raw_ptr_{nullptr};
   Destructor destructor_{Destructor::Default<T>()};
 };

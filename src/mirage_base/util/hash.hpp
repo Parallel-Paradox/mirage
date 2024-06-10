@@ -19,7 +19,7 @@ concept HashKeyType =
 };
 
 template <>
-struct MIRAGE_API Hash<size_t> {
+struct Hash<size_t> {
   size_t operator()(size_t val) const { return val; }
 };
 
