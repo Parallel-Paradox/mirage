@@ -46,6 +46,18 @@ class SinglyLinkedListIterator {
 
   explicit SinglyLinkedListIterator(Node* here) : here_(here) {}
 
+  iterator_type& operator=(const iterator_type& other) {
+    if (this != &other) {
+      here_ = other.here_;
+    }
+    return *this;
+  }
+
+  iterator_type& operator=(std::nullptr_t) {
+    here_ = nullptr;
+    return *this;
+  }
+
   reference operator*() const { return here_->val_; }
 
   pointer operator->() const { return &(here_->val_); }
@@ -125,6 +137,18 @@ class SinglyLinkedListConstIterator {
   explicit SinglyLinkedListConstIterator(
       const SinglyLinkedListIterator<T>& iter)
       : here_(iter.here_) {}
+
+  iterator_type& operator=(const iterator_type& other) {
+    if (this != &other) {
+      here_ = other.here_;
+    }
+    return *this;
+  }
+
+  iterator_type& operator=(std::nullptr_t) {
+    here_ = nullptr;
+    return *this;
+  }
 
   reference operator*() const { return here_->val_; }
 

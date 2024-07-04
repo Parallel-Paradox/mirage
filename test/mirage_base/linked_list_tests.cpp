@@ -38,6 +38,18 @@ TEST(SinglyLinkedListTests, Iterate) {
   EXPECT_EQ(cnt, 3);
 }
 
+TEST(SinglyLinkedListTests, SetIterator) {
+  SinglyLinkedList<int32_t> list = {0, 1, 2};
+  SinglyLinkedList<int32_t>::Iterator iter_a = list.begin();
+  SinglyLinkedList<int32_t>::Iterator iter_b;
+  iter_b = iter_a;
+  EXPECT_EQ(iter_a, iter_b);
+
+  iter_a = nullptr;
+  EXPECT_EQ(iter_a, list.end());
+  EXPECT_EQ(iter_b, list.begin());
+}
+
 TEST(SinglyLinkedListTests, Destruct) {
   int32_t destruct_cnt = 0;
   auto destructor = [](int32_t* ptr) {
