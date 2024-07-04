@@ -127,7 +127,8 @@ class ArrayConstIterator {
 
   ArrayConstIterator(const ArrayConstIterator& other) : ptr_(other.ptr_) {}
 
-  explicit ArrayConstIterator(const ArrayIterator<T>& iter) : ptr_(iter.ptr_) {}
+  // NOLINTNEXTLINE: Convert to const
+  ArrayConstIterator(const ArrayIterator<T>& iter) : ptr_(iter.ptr_) {}
 
   explicit ArrayConstIterator(pointer ptr) : ptr_(ptr) {}
 

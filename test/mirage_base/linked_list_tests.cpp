@@ -39,15 +39,28 @@ TEST(SinglyLinkedListTests, Iterate) {
 }
 
 TEST(SinglyLinkedListTests, SetIterator) {
+  using Iter = SinglyLinkedList<int32_t>::Iterator;
+  using ConstIter = SinglyLinkedList<int32_t>::ConstIterator;
+
   SinglyLinkedList<int32_t> list = {0, 1, 2};
-  SinglyLinkedList<int32_t>::Iterator iter_a = list.begin();
-  SinglyLinkedList<int32_t>::Iterator iter_b;
+
+  Iter iter_a = list.begin();
+  Iter iter_b;
   iter_b = iter_a;
   EXPECT_EQ(iter_a, iter_b);
-
+  EXPECT_TRUE(iter_a);
   iter_a = nullptr;
-  EXPECT_EQ(iter_a, list.end());
+  EXPECT_EQ(iter_a, nullptr);
   EXPECT_EQ(iter_b, list.begin());
+
+  ConstIter const_iter_a = list.begin();
+  ConstIter const_iter_b;
+  const_iter_b = const_iter_a;
+  EXPECT_EQ(const_iter_a, const_iter_b);
+  EXPECT_TRUE(const_iter_a);
+  const_iter_a = nullptr;
+  EXPECT_EQ(const_iter_a, nullptr);
+  EXPECT_EQ(const_iter_b, list.begin());
 }
 
 TEST(SinglyLinkedListTests, Destruct) {

@@ -83,6 +83,10 @@ class SinglyLinkedListIterator {
     return here_ == other.here_;
   }
 
+  bool operator==(std::nullptr_t) const { return here_ == nullptr; }
+
+  explicit operator bool() const { return here_ != nullptr; }
+
   template <typename... Args>
   void EmplaceAfter(Args&&... args) {
     Node* new_node = new Node(T(std::forward<Args>(args)...));
@@ -134,8 +138,8 @@ class SinglyLinkedListConstIterator {
 
   explicit SinglyLinkedListConstIterator(Node* here) : here_(here) {}
 
-  explicit SinglyLinkedListConstIterator(
-      const SinglyLinkedListIterator<T>& iter)
+  // NOLINTNEXTLINE: Convert to const
+  SinglyLinkedListConstIterator(const SinglyLinkedListIterator<T>& iter)
       : here_(iter.here_) {}
 
   iterator_type& operator=(const iterator_type& other) {
@@ -174,6 +178,10 @@ class SinglyLinkedListConstIterator {
   bool operator==(const iterator_type& other) const {
     return here_ == other.here_;
   }
+
+  bool operator==(std::nullptr_t) const { return here_ == nullptr; }
+
+  explicit operator bool() const { return here_ != nullptr; }
 
  private:
   Node* here_{nullptr};
