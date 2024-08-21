@@ -4,3 +4,8 @@
 # Build cache
 /build
 /.idea
+/.cache
+
+# IDE config
+/.vscode
+/.idea
