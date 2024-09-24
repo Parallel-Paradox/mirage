@@ -277,7 +277,7 @@ class Array {
     return std::move(data_[size_].GetRef());
   }
 
-  T& operator[](size_t index) { return data_[index].GetRef(); }
+  T& operator[](size_t index) const { return data_[index].GetRef(); }
 
   bool operator==(const Array& other) const {
     if (size_ != other.size_) {

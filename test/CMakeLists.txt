@@ -18,6 +18,7 @@ include(GoogleTest)
 add_executable(test.mirage_base
     mirage_base/array_tests.cpp
     mirage_base/auto_ptr_tests.cpp
+    mirage_base/hash_map_tests.cpp
     mirage_base/util_tests.cpp
     mirage_base/linked_list_tests.cpp
 )
