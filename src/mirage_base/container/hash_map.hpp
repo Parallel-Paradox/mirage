@@ -23,11 +23,12 @@ class HashMap {
   using Iterator = HashMapIterator<Key, Val>;
   using ConstIterator = HashMapConstIterator<Key, Val>;
 
-  HashMap() = default;
+  HashMap(Hash<Key> hasher = Hash<Key>()) : hasher_(std::move(hasher)) {}
 
   HashMap(const HashMap& other) {
     if constexpr (!std::copy_constructible<Key> ||
-                  !std::copy_constructible<Val>) {
+                  !std::copy_constructible<Val> ||
+                  !std::copy_constructible<Hash<Key>>) {
       MIRAGE_DCHECK(false);  // This type is supposed to be copyable.
     } else {
       // TODO
@@ -56,13 +57,20 @@ class HashMap {
     Val val_;
   };
 
-  HashMap(std::initializer_list<KVPair> list) {
+  HashMap(std::initializer_list<KVPair> list, Hash<Key> hasher = Hash<Key>()) {
     // TODO
   }
 
   ~HashMap() noexcept { Clear(); }
 
   Optional<Val> Insert(Key&& key, Val&& val) {
+    Val* old = TryFind(key);
+    if (old != nullptr) {
+      auto ret = Optional<Val>::New(std::move(*old));
+      new (old) Val(std::move(val));
+      return ret;
+    }
+
     // TODO
     return Optional<Val>::None();
   }
@@ -73,6 +81,7 @@ class HashMap {
   }
 
   Val* TryFind(const Key& key) const {
+    size_t hash = hasher_(key);
     // TODO
     return nullptr;
   }
@@ -96,6 +105,7 @@ class HashMap {
     uint32_t size_{0};
   };
 
+  Hash<Key> hasher_;
   Array<Bucket> buckets_;
   uint32_t max_bucket_size_{8};
   size_t size_{0};
