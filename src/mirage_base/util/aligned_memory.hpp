@@ -12,14 +12,15 @@ class AlignedMemory {
   ~AlignedMemory() = default;
 
   AlignedMemory(const AlignedMemory&) = delete;
+  AlignedMemory(AlignedMemory&&) = delete;
 
   T* GetPtr() { return (T*)mem_; }
 
-  const T* GetPtr() const { return (T*)mem_; }
+  const T* GetConstPtr() const { return (T*)mem_; }
 
   T& GetRef() { return *GetPtr(); }
 
-  const T& GetRef() const { return *GetPtr(); }
+  const T& GetConstRef() const { return *GetConstPtr(); }
 
  private:
   alignas(T) std::byte mem_[sizeof(T)];

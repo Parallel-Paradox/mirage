@@ -200,6 +200,14 @@ class SinglyLinkedList {
     other.head_ = nullptr;
   }
 
+  SinglyLinkedList& operator=(SinglyLinkedList&& other) noexcept {
+    if (this != &other) {
+      Clear();
+      new (this) SinglyLinkedList(std::move(other));
+    }
+    return *this;
+  }
+
   SinglyLinkedList(const SinglyLinkedList& other) {
     if constexpr (!std::copy_constructible<T>) {
       MIRAGE_DCHECK(false);  // This type is supposed to be copyable.
@@ -218,6 +226,18 @@ class SinglyLinkedList {
         ++iter;
       }
     }
+  }
+
+  SinglyLinkedList& operator=(const SinglyLinkedList& other) {
+    if constexpr (!std::copy_constructible<T>) {
+      MIRAGE_DCHECK(false);  // This type is supposed to be copyable.
+    } else {
+      if (this != &other) {
+        Clear();
+        new (this) SinglyLinkedList(other);
+      }
+    }
+    return *this;
   }
 
   SinglyLinkedList(std::initializer_list<T> list) {
@@ -240,14 +260,7 @@ class SinglyLinkedList {
     }
   }
 
-  ~SinglyLinkedList() {
-    Node* ptr = head_;
-    while (ptr != nullptr) {
-      Node* next = ptr->next_;
-      delete ptr;
-      ptr = next;
-    }
-  }
+  ~SinglyLinkedList() { Clear(); }
 
   template <typename... Args>
   void EmplaceHead(Args&&... args) {
@@ -271,6 +284,16 @@ class SinglyLinkedList {
     head_ = head_->next_;
     delete head;
     return std::move(val);
+  }
+
+  void Clear() {
+    Node* ptr = head_;
+    while (ptr != nullptr) {
+      Node* next = ptr->next_;
+      delete ptr;
+      ptr = next;
+    }
+    head_ = nullptr;
   }
 
   Iterator begin() { return Iterator(head_); }

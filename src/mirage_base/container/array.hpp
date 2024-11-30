@@ -230,11 +230,31 @@ class Array {
     }
   }
 
+  Array& operator=(const Array& other) {
+    if constexpr (!std::copy_constructible<T>) {
+      MIRAGE_DCHECK(false);  // This type is supposed to be copyable.
+    } else {
+      if (this != &other) {
+        Clear();
+        new (this) Array(other);
+      }
+    }
+    return *this;
+  }
+
   Array(Array&& other) noexcept
       : data_(other.data_), size_(other.size_), capacity_(other.capacity_) {
     other.size_ = 0;
     other.capacity_ = 0;
     other.data_ = nullptr;
+  }
+
+  Array& operator=(Array&& other) noexcept {
+    if (this != &other) {
+      Clear();
+      new (this) Array(std::move(other));
+    }
+    return *this;
   }
 
   Array(std::initializer_list<T> list) {
@@ -279,6 +299,13 @@ class Array {
 
   T& operator[](size_t index) const { return data_[index].GetRef(); }
 
+  T* TryGet(size_t index) const {
+    if (index >= size_) {
+      return nullptr;
+    }
+    return data_[index].GetPtr();
+  }
+
   bool operator==(const Array& other) const {
     if (size_ != other.size_) {
       return false;
@@ -290,7 +317,7 @@ class Array {
       return false;  // Can't be compared.
     } else {
       for (size_t i = 0; i < size_; ++i) {
-        if (data_[i].GetRef() != other.data_[i].GetRef()) {
+        if (data_[i].GetConstRef() != other.data_[i].GetConstRef()) {
           return false;
         }
       }

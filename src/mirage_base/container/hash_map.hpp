@@ -2,20 +2,26 @@
 #define MIRAGE_BASE_CONTAINER_HASH_MAP
 
 #include <initializer_list>
+#include <utility>
 
 #include "mirage_base/container/array.hpp"
 #include "mirage_base/container/singly_linked_list.hpp"
 #include "mirage_base/define.hpp"
+#include "mirage_base/util/aligned_memory.hpp"
 #include "mirage_base/util/hash.hpp"
 #include "mirage_base/util/optional.hpp"
 
 namespace mirage {
 
 template <HashKeyType Key, std::move_constructible Val>
-class HashMapIterator {};
+class HashMapIterator {
+  // TODO
+};
 
 template <HashKeyType Key, std::move_constructible Val>
-class HashMapConstIterator {};
+class HashMapConstIterator {
+  // TODO
+};
 
 template <HashKeyType Key, std::move_constructible Val>
 class HashMap {
@@ -25,18 +31,44 @@ class HashMap {
 
   HashMap(Hash<Key> hasher = Hash<Key>()) : hasher_(std::move(hasher)) {}
 
-  HashMap(const HashMap& other) {
+  HashMap(const HashMap& other) : hasher_(other.hasher_) {
     if constexpr (!std::copy_constructible<Key> ||
-                  !std::copy_constructible<Val> ||
-                  !std::copy_constructible<Hash<Key>>) {
+                  !std::copy_constructible<Val>) {
       MIRAGE_DCHECK(false);  // This type is supposed to be copyable.
     } else {
-      // TODO
+      buckets_ = other.buckets_;
+      max_bucket_size_ = other.max_bucket_size_;
+      size_ = other.size_;
     }
   }
 
-  HashMap(HashMap&& other) noexcept {
-    // TODO
+  HashMap& operator=(const HashMap& other) {
+    if constexpr (!std::copy_constructible<Key> ||
+                  !std::copy_constructible<Val>) {
+      MIRAGE_DCHECK(false);  // This type is supposed to be copyable.
+    } else {
+      if (this != &other) {
+        Clear();
+        new (this) HashMap(other);
+      }
+    }
+    return *this;
+  }
+
+  HashMap(HashMap&& other) noexcept : hasher_(std::move(other.hasher_)) {
+    buckets_ = std::move(other.buckets_);
+    max_bucket_size_ = other.max_bucket_size_;
+    size_ = other.size_;
+
+    other.Clear();
+  }
+
+  HashMap& operator=(HashMap&& other) noexcept {
+    if (this != &other) {
+      Clear();
+      new (this) HashMap(std::move(other));
+    }
+    return *this;
   }
 
   class KVPair {
@@ -44,21 +76,47 @@ class HashMap {
     KVPair() = delete;
     ~KVPair() = default;
 
-    KVPair(Key&& key, Val&& val) : key_(std::move(key)), val_(std::move(val)) {}
+    KVPair(const KVPair& other) {
+      if constexpr (!std::copy_constructible<Key> ||
+                    !std::copy_constructible<Val>) {
+        MIRAGE_DCHECK(false);  // This type is supposed to be copyable.
+      } else {
+        new (key_.GetPtr()) Key(other.key_.GetRef());
+        new (val_.GetPtr()) Val(other.val_.GetRef());
+      }
+    }
 
-    const Key& GetKey() const { return key_; }
+    KVPair(KVPair&& other) noexcept {
+      new (key_.GetPtr()) Key(std::move(other.key_.GetRef()));
+      new (val_.GetPtr()) Val(std::move(other.val_.GetRef()));
+    }
 
-    const Val& GetVal() const { return val_; }
+    KVPair(Key&& key, Val&& val) {
+      new (key_.GetPtr()) Key(std::move(key));
+      new (val_.GetPtr()) Val(std::move(val));
+    }
 
-    Val& GetVal() { return val_; }
+    const Key& GetConstKey() const { return key_.GetConstRef(); }
+
+    const Val& GetConstVal() const { return val_.GetConstRef(); }
+
+    Val& GetVal() { return val_.GetRef(); }
 
    private:
-    Key key_;
-    Val val_;
+    AlignedMemory<Key> key_;
+    AlignedMemory<Val> val_;
   };
 
-  HashMap(std::initializer_list<KVPair> list, Hash<Key> hasher = Hash<Key>()) {
-    // TODO
+  HashMap(std::initializer_list<KVPair> list, Hash<Key> hasher = Hash<Key>())
+      : hasher_(std::move(hasher)) {
+    if constexpr (!std::copy_constructible<Key> ||
+                  !std::copy_constructible<Val>) {
+      MIRAGE_DCHECK(false);  // This type is supposed to be copyable.
+    } else {
+      for (const KVPair& pair : list) {
+        Insert(Key(pair.GetConstKey()), Val(pair.GetConstVal()));
+      }
+    }
   }
 
   ~HashMap() noexcept { Clear(); }
@@ -81,8 +139,18 @@ class HashMap {
   }
 
   Val* TryFind(const Key& key) const {
+    if (IsEmpty()) {
+      return nullptr;
+    }
+
     size_t hash = hasher_(key);
-    // TODO
+    size_t index = hash % buckets_.GetSize();
+    auto& bucket = buckets_[index];
+    for (auto iter = bucket.list.begin(); iter != bucket.list.end(); ++iter) {
+      if (iter->GetConstKey() == key) {
+        return &(iter->GetVal());
+      }
+    }
     return nullptr;
   }
 
@@ -101,8 +169,28 @@ class HashMap {
 
  private:
   struct Bucket {
-    SinglyLinkedList<KVPair> list_;
-    uint32_t size_{0};
+    SinglyLinkedList<KVPair> list;
+    uint32_t size{0};
+
+    Bucket() = default;
+    ~Bucket() = default;
+
+    Bucket(const Bucket& other) {
+      if constexpr (!std::copy_constructible<Key> ||
+                    !std::copy_constructible<Val>) {
+        MIRAGE_DCHECK(false);  // This type is supposed to be copyable.
+      } else {
+        for (auto iter = other.list.begin(); iter != other.list.end(); ++iter) {
+          list.EmplaceHead(Key(iter->GetConstKey()), Val(iter->GetConstVal()));
+        }
+        size = other.size;
+      }
+    }
+
+    Bucket(Bucket&& other) noexcept
+        : list(std::move(other.list)), size(other.size) {
+      other.size = 0;
+    }
   };
 
   Hash<Key> hasher_;
