@@ -5,6 +5,19 @@
 
 using namespace mirage;
 
+namespace {
+
+struct Counter {
+  int32_t* base_destructed{nullptr};
+
+  explicit Counter(int32_t* base_destructed)
+      : base_destructed(base_destructed) {}
+
+  virtual ~Counter() { *base_destructed += 1; }
+};
+
+};  // namespace
+
 TEST(SinglyLinkedListTests, Iterate) {
   using Iter = SinglyLinkedList<int32_t>::Iterator;
   using ConstIter = SinglyLinkedList<int32_t>::ConstIterator;
@@ -65,14 +78,10 @@ TEST(SinglyLinkedListTests, SetIterator) {
 
 TEST(SinglyLinkedListTests, Destruct) {
   int32_t destruct_cnt = 0;
-  auto destructor = [](int32_t* ptr) {
-    *ptr += 1;
-  };
-
   {
-    SinglyLinkedList<Owned<int32_t>> list;
-    list.EmplaceHead(Owned<int32_t>(&destruct_cnt, destructor));
-    list.begin().EmplaceAfter(Owned<int32_t>(&destruct_cnt, destructor));
+    SinglyLinkedList<Owned<Counter>> list;
+    list.EmplaceHead(Owned<Counter>::New(&destruct_cnt));
+    list.begin().EmplaceAfter(Owned<Counter>::New(&destruct_cnt));
   }
   EXPECT_EQ(destruct_cnt, 2);
 }

@@ -11,15 +11,15 @@ namespace mirage {
 
 template <std::move_constructible T>
 struct SinglyLinkedListNode {
-  T val_;
-  SinglyLinkedListNode* next_{nullptr};
+  T val;
+  SinglyLinkedListNode* next{nullptr};
 
   SinglyLinkedListNode() = delete;
   SinglyLinkedListNode(SinglyLinkedListNode&&) = delete;
   SinglyLinkedListNode(const SinglyLinkedListNode&) = delete;
   ~SinglyLinkedListNode() = default;
 
-  explicit SinglyLinkedListNode(T&& val) : val_(std::move(val)) {}
+  explicit SinglyLinkedListNode(T&& val) : val(std::move(val)) {}
 };
 
 template <std::move_constructible T>
@@ -58,13 +58,13 @@ class SinglyLinkedListIterator {
     return *this;
   }
 
-  reference operator*() const { return here_->val_; }
+  reference operator*() const { return here_->val; }
 
-  pointer operator->() const { return &(here_->val_); }
+  pointer operator->() const { return &(here_->val); }
 
   iterator_type& operator++() {
     if (here_ != nullptr) {
-      here_ = here_->next_;
+      here_ = here_->next;
     }
     return *this;
   }
@@ -72,7 +72,7 @@ class SinglyLinkedListIterator {
   iterator_type operator++(int) {
     if (here_ != nullptr) {
       iterator_type temp = *this;
-      here_ = here_->next_;
+      here_ = here_->next;
       return temp;
     } else {
       return *this;
@@ -90,8 +90,8 @@ class SinglyLinkedListIterator {
   template <typename... Args>
   void EmplaceAfter(Args&&... args) {
     Node* new_node = new Node(T(std::forward<Args>(args)...));
-    new_node->next_ = here_->next_;
-    here_->next_ = new_node;
+    new_node->next = here_->next;
+    here_->next = new_node;
   }
 
   void InsertAfter(const T& val) {
@@ -103,10 +103,10 @@ class SinglyLinkedListIterator {
   }
 
   T RemoveAfter() {
-    MIRAGE_DCHECK(here_ != nullptr && here_->next_ != nullptr);
-    T val(std::move(here_->next_->val_));
-    Node* next = here_->next_;
-    here_->next_ = nullptr;
+    MIRAGE_DCHECK(here_ != nullptr && here_->next != nullptr);
+    T val(std::move(here_->next->val));
+    Node* next = here_->next;
+    here_->next = nullptr;
     delete next;
     return std::move(val);
   }
@@ -154,13 +154,13 @@ class SinglyLinkedListConstIterator {
     return *this;
   }
 
-  reference operator*() const { return here_->val_; }
+  reference operator*() const { return here_->val; }
 
-  pointer operator->() const { return &(here_->val_); }
+  pointer operator->() const { return &(here_->val); }
 
   iterator_type& operator++() {
     if (here_ != nullptr) {
-      here_ = here_->next_;
+      here_ = here_->next;
     }
     return *this;
   }
@@ -168,7 +168,7 @@ class SinglyLinkedListConstIterator {
   iterator_type operator++(int) {
     if (here_ != nullptr) {
       iterator_type temp = *this;
-      here_ = here_->next_;
+      here_ = here_->next;
       return temp;
     } else {
       return *this;
@@ -221,7 +221,7 @@ class SinglyLinkedList {
       ++iter;
       while (iter != other.end()) {
         Node* next = new Node(T(*iter));
-        ptr->next_ = next;
+        ptr->next = next;
         ptr = next;
         ++iter;
       }
@@ -253,7 +253,7 @@ class SinglyLinkedList {
       ++iter;
       while (iter != list.end()) {
         Node* next = new Node(T(*iter));
-        ptr->next_ = next;
+        ptr->next = next;
         ptr = next;
         ++iter;
       }
@@ -265,7 +265,7 @@ class SinglyLinkedList {
   template <typename... Args>
   void EmplaceHead(Args&&... args) {
     Node* new_head = new Node(T(std::forward<Args>(args)...));
-    new_head->next_ = head_;
+    new_head->next = head_;
     head_ = new_head;
   }
 
@@ -279,9 +279,9 @@ class SinglyLinkedList {
 
   T RemoveHead() {
     MIRAGE_DCHECK(head_ != nullptr);
-    T val(std::move(head_->val_));
+    T val(std::move(head_->val));
     Node* head = head_;
-    head_ = head_->next_;
+    head_ = head_->next;
     delete head;
     return std::move(val);
   }
@@ -289,7 +289,7 @@ class SinglyLinkedList {
   void Clear() {
     Node* ptr = head_;
     while (ptr != nullptr) {
-      Node* next = ptr->next_;
+      Node* next = ptr->next;
       delete ptr;
       ptr = next;
     }

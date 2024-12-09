@@ -44,7 +44,7 @@ class Optional {
 
   static Optional None() { return Optional(); }
 
-  [[nodiscard]] bool IsValid() const { return is_valid_; }
+  bool IsValid() const { return is_valid_; }
 
   T Unwrap() {
     MIRAGE_CHECK(is_valid_);

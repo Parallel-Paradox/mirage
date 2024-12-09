@@ -5,6 +5,19 @@
 
 using namespace mirage;
 
+namespace {
+
+struct Counter {
+  int32_t* base_destructed{nullptr};
+
+  explicit Counter(int32_t* base_destructed)
+      : base_destructed(base_destructed) {}
+
+  virtual ~Counter() { *base_destructed += 1; }
+};
+
+};  // namespace
+
 TEST(ArrayTests, Construct) {
   Array<int32_t> array = {0, 1, 2};
 
@@ -21,16 +34,12 @@ TEST(ArrayTests, Construct) {
 
 TEST(ArrayTests, DestructAfterMoved) {
   int32_t destruct_cnt = 0;
-  auto destructor = [](int32_t* ptr) {
-    *ptr += 1;
-  };
-
   {
-    Array<Owned<int32_t>> src;
-    src.Emplace(Owned<int32_t>(&destruct_cnt, destructor));
-    src.Emplace(Owned<int32_t>(&destruct_cnt, destructor));
-    Array<Owned<int32_t>> dst(std::move(src));
-    Owned<int32_t> pop = dst.Pop();
+    Array<Owned<Counter>> src;
+    src.Emplace(Owned<Counter>::New(&destruct_cnt));
+    src.Emplace(Owned<Counter>::New(&destruct_cnt));
+    Array<Owned<Counter>> dst(std::move(src));
+    Owned<Counter> pop = dst.Pop();
     EXPECT_EQ(destruct_cnt, 0);
   }
   EXPECT_EQ(destruct_cnt, 2);

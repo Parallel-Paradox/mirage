@@ -2,6 +2,7 @@
 #define MIRAGE_BASE_UTIL_ALIGNED_MEMORY
 
 #include <cstddef>
+#include <utility>
 
 namespace mirage {
 
@@ -13,6 +14,8 @@ class AlignedMemory {
 
   AlignedMemory(const AlignedMemory&) = delete;
   AlignedMemory(AlignedMemory&&) = delete;
+
+  AlignedMemory(T&& val) { new (GetPtr()) T(std::move(val)); }
 
   T* GetPtr() { return (T*)mem_; }
 
