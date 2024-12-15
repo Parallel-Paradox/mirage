@@ -5,7 +5,7 @@
 #include <cassert>
 #endif
 
-#if defined(MIRAGE_BUILD_SHARED) && defined(_WIN32)
+#if defined(MIRAGE_BUILD_SHARED) && defined(MIRAGE_BUILD_MSVC)
 #if defined(MIRAGE_BUILD)
 #define MIRAGE_API __declspec(dllexport)
 #else

@@ -1,3 +1,5 @@
+#ifdef MIRAGE_BUILD_MSVC
+
 #include "mirage_base/synchronize/lock_impl.hpp"
 
 #include <windows.h>
@@ -34,3 +36,5 @@ void LockImpl::AcquireInternal() {
 void LockImpl::Release() {
   ReleaseSRWLockExclusive(reinterpret_cast<SRWLOCK*>(native_handle_));
 }
+
+#endif
