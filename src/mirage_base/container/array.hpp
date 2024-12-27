@@ -29,7 +29,7 @@ class ArrayIterator {
 
   ArrayIterator(const ArrayIterator& other) : ptr_(other.ptr_) {}
 
-  explicit ArrayIterator(pointer ptr) : ptr_(ptr) {}
+  explicit ArrayIterator(value_type* const ptr) : ptr_(ptr) {}
 
   reference operator*() const { return *ptr_; }
 
@@ -130,7 +130,7 @@ class ArrayConstIterator {
   // NOLINTNEXTLINE: Convert to const
   ArrayConstIterator(const ArrayIterator<T>& iter) : ptr_(iter.ptr_) {}
 
-  explicit ArrayConstIterator(pointer ptr) : ptr_(ptr) {}
+  explicit ArrayConstIterator(value_type* const ptr) : ptr_(ptr) {}
 
   reference operator*() const { return *ptr_; }
 
@@ -323,24 +323,24 @@ class Array {
       }
       return true;
     }
-    return false;
   }
 
-  void Reserve(size_t capacity) {
+  void Reserve(const size_t capacity) {
     if (capacity <= capacity_) {
       return;
     }
     SetCapacity(capacity);
   }
 
-  T* GetRawPtr() const { return (T*)data_; }
+  T* GetRawPtr() const { return reinterpret_cast<T*>(data_); }
 
   [[nodiscard]] size_t GetSize() const { return size_; }
 
-  void SetSize(size_t size) {
+  void SetSize(const size_t size) {
     if (size == size_) {
       return;
-    } else if (size < size_) {
+    }
+    if (size < size_) {
       while (size < size_) {
         --size_;
         data_[size_].GetPtr()->~T();
@@ -363,13 +363,13 @@ class Array {
 
   [[nodiscard]] size_t GetCapacity() const { return capacity_; }
 
-  void SetCapacity(size_t capacity) {
+  void SetCapacity(const size_t capacity) {
     if (capacity == capacity_) {
       return;
     }
 
     auto* data = new AlignedMemory<T>[capacity]();
-    size_t size = capacity < size_ ? capacity : size_;
+    const size_t size = capacity < size_ ? capacity : size_;
     for (size_t i = 0; i < size; ++i) {
       T* ptr = data_[i].GetPtr();
       new (data[i].GetPtr()) T(std::move(*ptr));

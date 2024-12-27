@@ -15,18 +15,18 @@ class AlignedMemory {
   AlignedMemory(const AlignedMemory&) = delete;
   AlignedMemory(AlignedMemory&&) = delete;
 
-  AlignedMemory(T&& val) { new (GetPtr()) T(std::move(val)); }
+  explicit AlignedMemory(T&& val) { new (GetPtr()) T(std::move(val)); }
 
-  T* GetPtr() { return (T*)mem_; }
+  T* GetPtr() { return (T*)mem_; }  // NOLINT
 
-  const T* GetConstPtr() const { return (T*)mem_; }
+  const T* GetConstPtr() const { return (T*)mem_; }  // NOLINT
 
   T& GetRef() { return *GetPtr(); }
 
   const T& GetConstRef() const { return *GetConstPtr(); }
 
  private:
-  alignas(T) std::byte mem_[sizeof(T)];
+  alignas(T) std::byte mem_[sizeof(T)]{};
 };
 
 }  // namespace mirage

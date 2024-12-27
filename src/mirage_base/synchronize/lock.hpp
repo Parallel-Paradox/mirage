@@ -11,9 +11,9 @@ class MIRAGE_API Lock {
   Lock() = default;
   ~Lock() = default;
 
-  bool TryAcquire();
-  void Acquire();
-  void Release();
+  [[nodiscard]] bool TryAcquire() const;
+  void Acquire() const;
+  void Release() const;
 
  private:
   LockImpl lock_;

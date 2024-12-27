@@ -4,8 +4,6 @@
 #include <concepts>
 #include <cstddef>
 
-#include "mirage_base/define.hpp"
-
 namespace mirage {
 
 template <typename T>
@@ -21,7 +19,7 @@ concept HashKeyType =
 
 template <>
 struct Hash<size_t> {
-  size_t operator()(size_t val) const { return val; }
+  size_t operator()(const size_t val) const { return val; }
 };
 
 }  // namespace mirage

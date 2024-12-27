@@ -3,8 +3,6 @@
 
 #include <utility>
 
-#include "mirage_base/define.hpp"
-
 namespace mirage {
 
 template <typename T>
@@ -19,6 +17,7 @@ class Owned {
 
   explicit Owned(T* raw_ptr) : raw_ptr_(raw_ptr) {}
 
+  // NOLINTNEXTLINE: Signed by nullptr
   Owned(std::nullptr_t) : raw_ptr_(nullptr) {}
 
   template <typename... Args>

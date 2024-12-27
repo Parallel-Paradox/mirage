@@ -2,15 +2,15 @@
 
 using namespace mirage;
 
-bool Lock::TryAcquire() {
+bool Lock::TryAcquire() const {
   return lock_.TryAcquire();
 }
 
-void Lock::Acquire() {
+void Lock::Acquire() const {
   lock_.Acquire();
 }
 
-void Lock::Release() {
+void Lock::Release() const {
   lock_.Release();
 }
 

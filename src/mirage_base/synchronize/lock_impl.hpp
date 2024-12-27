@@ -13,12 +13,12 @@ class MIRAGE_API LockImpl {
   LockImpl(const LockImpl&) = delete;
   ~LockImpl();
 
-  bool TryAcquire();
-  void Acquire();
-  void Release();
+  [[nodiscard]] bool TryAcquire() const;
+  void Acquire() const;
+  void Release() const;
 
  private:
-  void AcquireInternal();
+  void AcquireInternal() const;
 
   NativeHandle native_handle_;
 };

@@ -6,7 +6,7 @@
 
 using namespace mirage;
 
-void LockImpl::Acquire() {
+void LockImpl::Acquire() const {
   // Try the lock first to acquire it cheaply if it's not contended. Try() is
   // cheap on platforms with futex-type locks, as it doesn't call into the
   // kernel.
@@ -18,23 +18,23 @@ void LockImpl::Acquire() {
 
 LockImpl::LockImpl() {
   native_handle_ = new SRWLOCK();
-  InitializeSRWLock(reinterpret_cast<SRWLOCK*>(native_handle_));
+  InitializeSRWLock(static_cast<SRWLOCK*>(native_handle_));
 }
 
 LockImpl::~LockImpl() {
-  delete reinterpret_cast<SRWLOCK*>(native_handle_);
+  delete static_cast<SRWLOCK*>(native_handle_);
 }
 
-bool LockImpl::TryAcquire() {
-  return TryAcquireSRWLockExclusive(reinterpret_cast<SRWLOCK*>(native_handle_));
+bool LockImpl::TryAcquire() const {
+  return TryAcquireSRWLockExclusive(static_cast<SRWLOCK*>(native_handle_));
 }
 
-void LockImpl::AcquireInternal() {
-  AcquireSRWLockExclusive(reinterpret_cast<SRWLOCK*>(native_handle_));
+void LockImpl::AcquireInternal() const {
+  AcquireSRWLockExclusive(static_cast<SRWLOCK*>(native_handle_));
 }
 
-void LockImpl::Release() {
-  ReleaseSRWLockExclusive(reinterpret_cast<SRWLOCK*>(native_handle_));
+void LockImpl::Release() const {
+  ReleaseSRWLockExclusive(static_cast<SRWLOCK*>(native_handle_));
 }
 
 #endif
