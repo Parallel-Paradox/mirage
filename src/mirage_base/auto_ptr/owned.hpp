@@ -13,12 +13,17 @@ class Owned {
   Owned() = default;
   Owned(const Owned&) = delete;
 
-  ~Owned() { Clear(); }
+  ~Owned() { Reset(); }
 
   explicit Owned(T* raw_ptr) : raw_ptr_(raw_ptr) {}
 
   // NOLINTNEXTLINE: Signed by nullptr
   Owned(std::nullptr_t) : raw_ptr_(nullptr) {}
+
+  Owned& operator=(std::nullptr_t) {
+    Reset();
+    return *this;
+  }
 
   template <typename... Args>
   static Owned New(Args&&... args) {
@@ -31,15 +36,15 @@ class Owned {
 
   Owned& operator=(Owned&& other) noexcept {
     if (this != &other) {
-      Clear();
+      Reset();
       new (this) Owned(std::move(other));
     }
     return *this;
   }
 
-  Owned& operator=(std::nullptr_t) {
-    Clear();
-    return *this;
+  void Reset() {
+    delete raw_ptr_;
+    raw_ptr_ = nullptr;
   }
 
   template <typename T1>
@@ -72,11 +77,6 @@ class Owned {
   [[nodiscard]] bool IsNull() const { return raw_ptr_ == nullptr; }
 
  private:
-  void Clear() {
-    delete raw_ptr_;
-    raw_ptr_ = nullptr;
-  }
-
   T* raw_ptr_{nullptr};
 };
 

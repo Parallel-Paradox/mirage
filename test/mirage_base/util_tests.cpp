@@ -18,13 +18,13 @@ struct EqHash {
 }  // namespace
 
 template <>
-struct Hash<HashOnly> {
-  size_t operator()(const HashOnly&) { return 0; }
+struct mirage::Hash<HashOnly> {
+  size_t operator()(const HashOnly&) const { return 0; }
 };
 
 template <>
-struct Hash<EqHash> {
-  size_t operator()(const EqHash&) { return 0; }
+struct mirage::Hash<EqHash> {
+  size_t operator()(const EqHash&) const { return 0; }
 };
 
 TEST(UtilTests, HashConcept) {
@@ -33,7 +33,7 @@ TEST(UtilTests, HashConcept) {
   EXPECT_TRUE(HashKeyType<EqHash>);
 
   EXPECT_TRUE(HashKeyType<size_t>);
-  EXPECT_EQ(Hash<size_t>()(13), 13);
+  EXPECT_EQ(mirage::Hash<size_t>()(13), 13);
 }
 
 TEST(UtilTests, UnwrapOptional) {
@@ -50,7 +50,7 @@ TEST(UtilTests, UnwrapOptional) {
 TEST(UtilTests, MoveOptional) {
   auto num = Optional<int32_t>::New(1);
   EXPECT_TRUE(num.IsValid());
-  Optional<int> move_num(std::move(num));
+  Optional move_num(std::move(num));
   EXPECT_FALSE(num.IsValid());  // NOLINT(*-use-after-move): Allow for test.
   EXPECT_TRUE(move_num.IsValid());
   EXPECT_EQ(move_num.Unwrap(), 1);

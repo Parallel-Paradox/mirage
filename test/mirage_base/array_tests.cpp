@@ -7,25 +7,25 @@ using namespace mirage;
 
 namespace {
 
-struct Counter {
+struct Counter final {
   int32_t* base_destructed{nullptr};
 
   explicit Counter(int32_t* base_destructed)
       : base_destructed(base_destructed) {}
 
-  virtual ~Counter() { *base_destructed += 1; }
+  ~Counter() { *base_destructed += 1; }
 };
 
-};  // namespace
+}  // namespace
 
 TEST(ArrayTests, Construct) {
-  Array<int32_t> array = {0, 1, 2};
+  Array array = {0, 1, 2};
 
-  Array<int32_t> copy_array(array);
+  const Array copy_array(array);
   EXPECT_EQ(array, copy_array);
 
   int32_t* raw_ptr = array.GetRawPtr();
-  Array<int32_t> move_array(std::move(array));
+  const Array move_array(std::move(array));
   EXPECT_TRUE(array.IsEmpty());  // NOLINT(*-use-after-move): Allow for test.
   EXPECT_EQ(array.GetRawPtr(), nullptr);
   EXPECT_EQ(raw_ptr, move_array.GetRawPtr());
@@ -38,7 +38,7 @@ TEST(ArrayTests, DestructAfterMoved) {
     Array<Owned<Counter>> src;
     src.Emplace(Owned<Counter>::New(&destruct_cnt));
     src.Emplace(Owned<Counter>::New(&destruct_cnt));
-    Array<Owned<Counter>> dst(std::move(src));
+    Array dst(std::move(src));
     Owned<Counter> pop = dst.Pop();
     EXPECT_EQ(destruct_cnt, 0);
   }
@@ -46,7 +46,7 @@ TEST(ArrayTests, DestructAfterMoved) {
 }
 
 TEST(ArrayTests, ChangeSizeAndCapacity) {
-  Array<int32_t> array = {0, 1, 2};
+  Array array = {0, 1, 2};
   EXPECT_EQ(array.GetSize(), 3);
   EXPECT_EQ(array.GetCapacity(), 3);
 
@@ -73,8 +73,8 @@ TEST(ArrayTests, ChangeSizeAndCapacity) {
 }
 
 TEST(ArrayTests, CompareEquality) {
-  Array<int32_t> array_a = {0, 1, 2};
-  Array<int32_t> array_b = {2, 1, 0};
+  const Array array_a = {0, 1, 2};
+  const Array array_b = {2, 1, 0};
   EXPECT_EQ(array_a, array_a);
   EXPECT_NE(array_a, array_b);
 }
@@ -82,16 +82,16 @@ TEST(ArrayTests, CompareEquality) {
 TEST(ArrayTests, IterateArray) {
   EXPECT_TRUE(std::contiguous_iterator<Array<int32_t>::Iterator>);
   EXPECT_TRUE(std::contiguous_iterator<Array<int32_t>::ConstIterator>);
-  Array<int32_t> array = {0, 1, 2};
+  Array array = {0, 1, 2};
   for (auto iter = array.begin(); iter != array.end(); ++iter) {  // NOLINT
     *iter += 1;
   }
   for (auto& num : array) {
     num += 1;
   }
-  const Array<int32_t> compare = {2, 3, 4};
-  auto arr_iter = array.begin();
-  auto cmp_iter = compare.begin();
+  const Array compare = {2, 3, 4};
+  const auto arr_iter = array.begin();
+  const auto cmp_iter = compare.begin();
   for (int32_t i = 0; i < 3; ++i) {
     EXPECT_EQ(arr_iter[i], cmp_iter[i]);
   }

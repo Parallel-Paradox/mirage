@@ -7,16 +7,16 @@ using namespace mirage;
 
 namespace {
 
-struct Counter {
+struct Counter final {
   int32_t* base_destructed{nullptr};
 
   explicit Counter(int32_t* base_destructed)
       : base_destructed(base_destructed) {}
 
-  virtual ~Counter() { *base_destructed += 1; }
+  ~Counter() { *base_destructed += 1; }
 };
 
-};  // namespace
+}  // namespace
 
 TEST(SinglyLinkedListTests, Iterate) {
   using Iter = SinglyLinkedList<int32_t>::Iterator;
@@ -25,7 +25,7 @@ TEST(SinglyLinkedListTests, Iterate) {
   EXPECT_TRUE(std::forward_iterator<SinglyLinkedList<int32_t>::Iterator>);
   EXPECT_TRUE(std::forward_iterator<SinglyLinkedList<int32_t>::ConstIterator>);
 
-  SinglyLinkedList<int32_t> list = {0, 1, 2};
+  SinglyLinkedList list = {0, 1, 2};
 
   int cnt = 0;
   for (int32_t num : list) {
@@ -55,10 +55,10 @@ TEST(SinglyLinkedListTests, SetIterator) {
   using Iter = SinglyLinkedList<int32_t>::Iterator;
   using ConstIter = SinglyLinkedList<int32_t>::ConstIterator;
 
-  SinglyLinkedList<int32_t> list = {0, 1, 2};
+  SinglyLinkedList list = {0, 1, 2};
 
   Iter iter_a = list.begin();
-  Iter iter_b;
+  Iter iter_b;  // NOLINT: Test setter
   iter_b = iter_a;
   EXPECT_EQ(iter_a, iter_b);
   EXPECT_TRUE(iter_a);
@@ -67,7 +67,7 @@ TEST(SinglyLinkedListTests, SetIterator) {
   EXPECT_EQ(iter_b, list.begin());
 
   ConstIter const_iter_a = list.begin();
-  ConstIter const_iter_b;
+  ConstIter const_iter_b;  // NOLINT: Test setter
   const_iter_b = const_iter_a;
   EXPECT_EQ(const_iter_a, const_iter_b);
   EXPECT_TRUE(const_iter_a);
@@ -87,18 +87,18 @@ TEST(SinglyLinkedListTests, Destruct) {
 }
 
 TEST(SinglyLinkedListTests, Remove) {
-  SinglyLinkedList<int32_t> list = {0, 1};
+  SinglyLinkedList list = {0, 1};
   EXPECT_EQ(list.begin().RemoveAfter(), 1);
   EXPECT_EQ(list.RemoveHead(), 0);
   EXPECT_EQ(list.begin(), list.end());
 }
 
 TEST(SinglyLinkedListTests, MoveAndCopy) {
-  SinglyLinkedList<int32_t> list = {0, 1};
-  SinglyLinkedList<int32_t> move_list(std::move(list));
-  SinglyLinkedList<int32_t> copy_list(move_list);
+  SinglyLinkedList list = {0, 1};
+  SinglyLinkedList move_list(std::move(list));
+  SinglyLinkedList copy_list(move_list);
 
-  EXPECT_EQ(list.begin(), list.end());  // NOLINT
+  EXPECT_EQ(list.begin(), list.end());
 
   int cnt = 0;
   for (int32_t num : move_list) {
