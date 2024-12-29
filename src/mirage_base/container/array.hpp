@@ -31,6 +31,18 @@ class ArrayIterator {
 
   explicit ArrayIterator(value_type* const ptr) : ptr_(ptr) {}
 
+  iterator_type& operator=(const iterator_type& other) {
+    if (this != &other) {
+      ptr_ = other.ptr_;
+    }
+    return *this;
+  }
+
+  iterator_type& operator=(std::nullptr_t) {
+    ptr_ = nullptr;
+    return *this;
+  }
+
   reference operator*() const { return *ptr_; }
 
   pointer operator->() const { return ptr_; }
@@ -87,17 +99,7 @@ class ArrayIterator {
     return ptr_ - other.ptr_;
   }
 
-  bool operator==(const iterator_type& other) const {
-    return ptr_ == other.ptr_;
-  }
-
-  bool operator<(const iterator_type& other) const { return ptr_ < other.ptr_; }
-
-  bool operator>(const iterator_type& other) const { return other < *this; }
-
-  bool operator>=(const iterator_type& other) const { return !(*this < other); }
-
-  bool operator<=(const iterator_type& other) const { return !(other < *this); }
+  std::strong_ordering operator<=>(const iterator_type& other) const = default;
 
  private:
   friend class ArrayConstIterator<T>;

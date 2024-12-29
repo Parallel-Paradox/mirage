@@ -105,7 +105,7 @@ class SinglyLinkedListIterator {
   T RemoveAfter() {
     MIRAGE_DCHECK(here_ != nullptr && here_->next != nullptr);
     T val(std::move(here_->next->val));
-    Node* next = here_->next;
+    const Node* next = here_->next;
     here_->next = nullptr;
     delete next;
     return std::move(val);
@@ -156,7 +156,7 @@ class SinglyLinkedListConstIterator {
 
   reference operator*() const { return here_->val; }
 
-  pointer operator->() const { return &(here_->val); }
+  pointer operator->() const { return &here_->val; }
 
   iterator_type& operator++() {
     if (here_ != nullptr) {
@@ -170,9 +170,8 @@ class SinglyLinkedListConstIterator {
       iterator_type temp = *this;
       here_ = here_->next;
       return temp;
-    } else {
-      return *this;
     }
+    return *this;
   }
 
   bool operator==(const iterator_type& other) const {
@@ -280,7 +279,7 @@ class SinglyLinkedList {
   T RemoveHead() {
     MIRAGE_DCHECK(head_ != nullptr);
     T val(std::move(head_->val));
-    Node* head = head_;
+    const Node* head = head_;
     head_ = head_->next;
     delete head;
     return std::move(val);

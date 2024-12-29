@@ -19,6 +19,8 @@ class Optional {
     }
   }
 
+  explicit Optional(T&& val) : is_valid_(true), obj(std::move(val)) {}
+
   Optional& operator=(Optional&& other) noexcept {
     if (this != &other) {
       this->~Optional();
