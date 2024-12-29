@@ -201,4 +201,4 @@ class HashMap {
 
 }  // namespace mirage
 
-#endif
+#endif  // MIRAGE_BASE_CONTAINER_HASH_MAP
