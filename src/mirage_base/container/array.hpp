@@ -190,17 +190,7 @@ class ArrayConstIterator {
     return ptr_ - other.ptr_;
   }
 
-  bool operator==(const iterator_type& other) const {
-    return ptr_ == other.ptr_;
-  }
-
-  bool operator<(const iterator_type& other) const { return ptr_ < other.ptr_; }
-
-  bool operator>(const iterator_type& other) const { return other < *this; }
-
-  bool operator>=(const iterator_type& other) const { return !(*this < other); }
-
-  bool operator<=(const iterator_type& other) const { return !(other < *this); }
+  std::strong_ordering operator<=>(const iterator_type& other) const = default;
 
  private:
   pointer ptr_{nullptr};
