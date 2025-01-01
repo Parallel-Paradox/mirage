@@ -4,7 +4,7 @@
 
 #include <pthread.h>
 
-using namespace mirage;
+using namespace mirage::base;
 
 void LockImpl::Acquire() const {
   // Try the lock first to acquire it cheaply if it's not contended. Try() is

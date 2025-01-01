@@ -11,7 +11,7 @@
 #include "mirage_base/util/hash.hpp"
 #include "mirage_base/util/optional.hpp"
 
-namespace mirage {
+namespace mirage::base {
 
 template <HashKeyType Key, std::move_constructible Val>
 class HashMapIterator {
@@ -199,6 +199,6 @@ class HashMap {
   size_t size_{0};
 };
 
-}  // namespace mirage
+}  // namespace mirage::base
 
 #endif  // MIRAGE_BASE_CONTAINER_HASH_MAP

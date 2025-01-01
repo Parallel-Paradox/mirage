@@ -3,7 +3,7 @@
 
 #include <utility>
 
-namespace mirage {
+namespace mirage::base {
 
 template <typename T>
 class Owned {
@@ -80,6 +80,6 @@ class Owned {
   T* raw_ptr_{nullptr};
 };
 
-}  // namespace mirage
+}  // namespace mirage::base
 
 #endif  // MIRAGE_BASE_AUTO_PTR_OWNED

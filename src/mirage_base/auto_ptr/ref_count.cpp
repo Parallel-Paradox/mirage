@@ -1,6 +1,6 @@
 #include "mirage_base/auto_ptr/ref_count.hpp"
 
-using namespace mirage;
+using namespace mirage::base;
 
 size_t RefCountLocal::GetCnt() {
   return cnt_;

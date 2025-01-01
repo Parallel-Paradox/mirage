@@ -5,7 +5,7 @@
 #include "mirage_base/auto_ptr/owned.hpp"
 #include "mirage_base/auto_ptr/ref_count.hpp"
 
-using namespace mirage;
+using namespace mirage::base;
 
 namespace {
 

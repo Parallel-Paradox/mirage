@@ -6,7 +6,7 @@
 #include "mirage_base/define.hpp"
 #include "mirage_base/util/aligned_memory.hpp"
 
-namespace mirage {
+namespace mirage::base {
 
 template <std::move_constructible T>
 class Optional {
@@ -61,6 +61,6 @@ class Optional {
   AlignedMemory<T> obj;
 };
 
-}  // namespace mirage
+}  // namespace mirage::base
 
 #endif  // MIRAGE_BASE_UTIL_OPTIONAL

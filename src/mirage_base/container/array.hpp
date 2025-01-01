@@ -8,7 +8,7 @@
 #include "mirage_base/define.hpp"
 #include "mirage_base/util/aligned_memory.hpp"
 
-namespace mirage {
+namespace mirage::base {
 
 template <std::move_constructible T>
 class ArrayConstIterator;
@@ -397,6 +397,6 @@ class Array {
   size_t capacity_{0};
 };
 
-}  // namespace mirage
+}  // namespace mirage::base
 
 #endif  // MIRAGE_BASE_CONTAINER_ARRAY

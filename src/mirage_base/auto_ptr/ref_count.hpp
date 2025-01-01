@@ -6,7 +6,7 @@
 #include "mirage_base/define.hpp"
 #include "mirage_base/synchronize/lock.hpp"
 
-namespace mirage {
+namespace mirage::base {
 
 class MIRAGE_API RefCount {
  public:
@@ -47,6 +47,6 @@ template <typename R>
 concept AsRefCount =
     std::default_initializable<R> && std::derived_from<R, RefCount>;
 
-}  // namespace mirage
+}  // namespace mirage::base
 
 #endif  // MIRAGE_BASE_AUTO_PTR_REF_COUNT

@@ -3,7 +3,7 @@
 #include "mirage_base/util/hash.hpp"
 #include "mirage_base/util/optional.hpp"
 
-using namespace mirage;
+using namespace mirage::base;
 
 namespace {
 
@@ -18,12 +18,12 @@ struct EqHash {
 }  // namespace
 
 template <>
-struct mirage::Hash<HashOnly> {
+struct mirage::base::Hash<HashOnly> {
   size_t operator()(const HashOnly&) const { return 0; }
 };
 
 template <>
-struct mirage::Hash<EqHash> {
+struct mirage::base::Hash<EqHash> {
   size_t operator()(const EqHash&) const { return 0; }
 };
 
@@ -33,7 +33,7 @@ TEST(UtilTests, HashConcept) {
   EXPECT_TRUE(HashKeyType<EqHash>);
 
   EXPECT_TRUE(HashKeyType<size_t>);
-  EXPECT_EQ(mirage::Hash<size_t>()(13), 13);
+  EXPECT_EQ(mirage::base::Hash<size_t>()(13), 13);
 }
 
 TEST(UtilTests, UnwrapOptional) {

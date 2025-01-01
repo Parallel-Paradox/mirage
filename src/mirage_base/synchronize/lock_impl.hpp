@@ -3,7 +3,7 @@
 
 #include "mirage_base/define.hpp"
 
-namespace mirage {
+namespace mirage::base {
 
 class MIRAGE_API LockImpl {
  public:
@@ -23,6 +23,6 @@ class MIRAGE_API LockImpl {
   NativeHandle native_handle_;
 };
 
-}  // namespace mirage
+}  // namespace mirage::base
 
 #endif  // MIRAGE_BASE_SYNCHRONIZE_LOCK_IMPL

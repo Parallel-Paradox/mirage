@@ -1,6 +1,6 @@
 #include "mirage_base/synchronize/lock.hpp"
 
-using namespace mirage;
+using namespace mirage::base;
 
 bool Lock::TryAcquire() const {
   return lock_.TryAcquire();

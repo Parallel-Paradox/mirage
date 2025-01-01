@@ -7,7 +7,7 @@
 
 #include "mirage_base/define.hpp"
 
-namespace mirage {
+namespace mirage::base {
 
 template <std::move_constructible T>
 struct SinglyLinkedListNode {
@@ -307,6 +307,6 @@ class SinglyLinkedList {
   Node* head_{nullptr};
 };
 
-}  // namespace mirage
+}  // namespace mirage::base
 
 #endif  // MIRAGE_BASE_CONTAINER_SINGLY_LINKED_LIST

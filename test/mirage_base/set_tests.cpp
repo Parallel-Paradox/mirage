@@ -2,7 +2,7 @@
 
 #include "mirage_base/container/set.hpp"
 
-using namespace mirage;
+using namespace mirage::base;
 
 TEST(SetTests, Construct) {
   const Set<int32_t> set;

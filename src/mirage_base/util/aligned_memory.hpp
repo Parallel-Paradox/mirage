@@ -4,7 +4,7 @@
 #include <cstddef>
 #include <utility>
 
-namespace mirage {
+namespace mirage::base {
 
 template <typename T>
 class AlignedMemory {
@@ -29,6 +29,6 @@ class AlignedMemory {
   alignas(T) std::byte mem_[sizeof(T)]{};
 };
 
-}  // namespace mirage
+}  // namespace mirage::base
 
 #endif  // MIRAGE_BASE_UTIL_ALIGNED_MEMORY

@@ -2,7 +2,7 @@
 
 #include "mirage_base/container/hash_map.hpp"
 
-using namespace mirage;
+using namespace mirage::base;
 
 TEST(HashMapTests, Construct) {
   using KVPair = HashMap<size_t, size_t>::KVPair;

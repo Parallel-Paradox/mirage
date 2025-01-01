@@ -7,7 +7,7 @@
 #include "mirage_base/util/aligned_memory.hpp"
 #include "mirage_base/util/optional.hpp"
 
-namespace mirage {
+namespace mirage::base {
 
 template <typename T>
 concept RBTreeNodeType = std::move_constructible<T> && std::totally_ordered<T>;
@@ -510,6 +510,6 @@ using MultiSet = RBTree<T>;
 template <RBTreeNodeType T>
 using Set = RBTree<T, false>;
 
-}  // namespace mirage
+}  // namespace mirage::base
 
 #endif  // MIRAGE_BASE_CONTAINER_SET

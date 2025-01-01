@@ -4,7 +4,7 @@
 #include "mirage_base/define.hpp"
 #include "mirage_base/synchronize/lock_impl.hpp"
 
-namespace mirage {
+namespace mirage::base {
 
 class MIRAGE_API Lock {
  public:
@@ -31,6 +31,6 @@ class MIRAGE_API LockGuard {
   Lock& lock_;
 };
 
-}  // namespace mirage
+}  // namespace mirage::base
 
 #endif  // MIRAGE_BASE_SYNCHRONIZE_LOCK
