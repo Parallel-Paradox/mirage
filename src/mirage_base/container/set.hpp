@@ -149,6 +149,9 @@ class RBTreeConstIterator {
   }
 
  private:
+  friend class RBTree<T, true>;
+  friend class RBTree<T, false>;
+
   Node* here_{Node::Null()};
 };
 
@@ -248,15 +251,12 @@ class RBTree {
 
   Optional<T> Remove(const T& val) {
     // Find remove place
-    Node* val_ptr = const_cast<Node*>(TryFind(val));
-    if (val_ptr == nullptr)
+    Node* val_ptr = const_cast<Node*>(TryFind(val).here_);
+    if (val_ptr == Node::Null()) {
       return Optional<T>::None();
-    Optional<T> rv(std::move(val_ptr->val.GetRef()));
-    if (val_ptr == root_) {
-      root_ = Node::Null();
-      delete val_ptr;
-      return rv;
     }
+    --size_;
+    Optional<T> rv(std::move(val_ptr->val.GetRef()));
 
     bool left_exists = val_ptr->left != Node::Null();
     bool right_exists = val_ptr->right != Node::Null();
@@ -375,11 +375,11 @@ class RBTree {
     return rv;
   }
 
-  const Node* TryFind(const T& val) const {
+  ConstIterator TryFind(const T& val) const {
     Node* iter = root_;
     while (iter != Node::Null()) {
       if (val == iter->val.GetConstRef()) {
-        return iter;
+        return ConstIterator(*iter);
       }
       if (val < iter->val.GetConstRef()) {
         iter = iter->left;
@@ -387,7 +387,34 @@ class RBTree {
         iter = iter->right;
       }
     }
-    return nullptr;
+    return end();
+  }
+
+  size_t Count(const T& val) const {
+    if constexpr (IS_DUPLICATE_ALLOWED) {
+      ConstIterator val_iter = TryFind(val);
+      if (val_iter == end()) {
+        return 0;
+      }
+      ConstIterator iter = val_iter;
+      size_t rv = 0;
+      while (iter != end() && *iter == val) {
+        ++rv;
+        ++iter;
+      }
+      iter = val_iter;
+      --iter;
+      while (iter != end() && *iter == val) {
+        ++rv;
+        --iter;
+      }
+      return rv;
+    } else {
+      if (TryFind(val) != end()) {
+        return 1;
+      }
+      return 0;
+    }
   }
 
   void Clear() {
@@ -411,6 +438,16 @@ class RBTree {
   [[nodiscard]] bool IsEmpty() const { return size_ == 0; }
 
   [[nodiscard]] size_t GetSize() const { return size_; }
+
+  ConstIterator begin() const {
+    Node* iter = root_;
+    while (iter->left != Node::Null()) {
+      iter = iter->left;
+    }
+    return ConstIterator(*iter);
+  }
+
+  ConstIterator end() const { return ConstIterator(); }
 
  private:
   void RotateLeft(Node& node) {
