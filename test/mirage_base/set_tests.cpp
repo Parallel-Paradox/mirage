@@ -13,5 +13,5 @@ TEST(SetTests, Construct) {
 
 TEST(SetTests, IterateSet) {
   EXPECT_TRUE(std::bidirectional_iterator<Set<int32_t>::ConstIterator>);
-  const Set set = {0, 1, 2};
+  const Set<int32_t> set = {0, 1, 2};
 }

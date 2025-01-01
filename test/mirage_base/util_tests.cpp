@@ -50,7 +50,7 @@ TEST(UtilTests, UnwrapOptional) {
 TEST(UtilTests, MoveOptional) {
   auto num = Optional<int32_t>::New(1);
   EXPECT_TRUE(num.IsValid());
-  Optional move_num(std::move(num));
+  Optional<int32_t> move_num(std::move(num));
   EXPECT_FALSE(num.IsValid());  // NOLINT(*-use-after-move): Allow for test.
   EXPECT_TRUE(move_num.IsValid());
   EXPECT_EQ(move_num.Unwrap(), 1);
