@@ -56,8 +56,8 @@ class RBTree {
   size_t size_;
 };
 
-template <RBTreeNodeType T, bool D>
-struct RBTree<T, D>::Node {
+template <RBTreeNodeType T, bool IS_DUPLICATE_ALLOWED>
+struct RBTree<T, IS_DUPLICATE_ALLOWED>::Node {
  private:
   Node() : parent(this), left(this), right(this), color(BLACK) {}
 
@@ -427,12 +427,12 @@ void RBTree<T, D>::RBTree::Clear() {
 }
 
 template <RBTreeNodeType T, bool D>
-[[nodiscard]] bool RBTree<T, D>::RBTree::IsEmpty() const {
+bool RBTree<T, D>::RBTree::IsEmpty() const {
   return size_ == 0;
 }
 
 template <RBTreeNodeType T, bool D>
-[[nodiscard]] size_t RBTree<T, D>::RBTree::GetSize() const {
+size_t RBTree<T, D>::RBTree::GetSize() const {
   return size_;
 }
 

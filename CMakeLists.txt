@@ -18,8 +18,9 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/bin)
 
 option(MIRAGE_BUILD_SHARED "Build shared mirage engine" ON)
 
-add_subdirectory(src/mirage_framework)
 add_subdirectory(src/mirage_base)
+add_subdirectory(src/mirage_framework)
+
 if (MIRAGE_BUILD_SHARED)
   message(STATUS "Building shared mirage engine...")
   add_library(mirage_engine SHARED ${SRC})
