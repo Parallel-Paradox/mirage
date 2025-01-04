@@ -35,6 +35,8 @@ struct KeyVal {
 
     Accessor(const Key& key, Val& val) : key(key), val(val) {}
   };
+
+  Accessor GetAccessor() { return Accessor(key, val); }
 };
 
 #endif  // MIRAGE_BASE_UTIL_KEY_VAL

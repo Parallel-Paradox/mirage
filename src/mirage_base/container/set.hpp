@@ -168,13 +168,11 @@ class RBTree {
 
   ~RBTree() { Clear(); }
 
-  RBTree(std::initializer_list<T> list) {
-    if constexpr (!std::copy_constructible<T>) {
-      MIRAGE_DCHECK(false);  // This type is supposed to be copyable.
-    } else {
-      for (const T& val : list) {
-        Insert(T(val));
-      }
+  RBTree(std::initializer_list<T> list)
+    requires std::copy_constructible<T>
+  {
+    for (const T& val : list) {
+      Insert(T(val));
     }
   }
 

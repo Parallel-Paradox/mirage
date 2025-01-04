@@ -211,25 +211,21 @@ class Array {
 
   Array() = default;
 
-  Array(const Array& other) {
-    if constexpr (!std::copy_constructible<T>) {
-      MIRAGE_DCHECK(false);  // This type is supposed to be copyable.
-    } else {
-      Reserve(other.size_);
-      for (const T& val : other) {
-        Push(val);
-      }
+  Array(const Array& other)
+    requires std::copy_constructible<T>
+  {
+    Reserve(other.size_);
+    for (const T& val : other) {
+      Push(val);
     }
   }
 
-  Array& operator=(const Array& other) {
-    if constexpr (!std::copy_constructible<T>) {
-      MIRAGE_DCHECK(false);  // This type is supposed to be copyable.
-    } else {
-      if (this != &other) {
-        Clear();
-        new (this) Array(other);
-      }
+  Array& operator=(const Array& other)
+    requires std::copy_constructible<T>
+  {
+    if (this != &other) {
+      Clear();
+      new (this) Array(other);
     }
     return *this;
   }
@@ -268,12 +264,10 @@ class Array {
     capacity_ = 0;
   }
 
-  void Push(const T& val) {
-    if constexpr (!std::copy_constructible<T>) {
-      MIRAGE_DCHECK(false);  // This type is supposed to be copyable.
-    } else {
-      Emplace(T(val));
-    }
+  void Push(const T& val)
+    requires std::copy_constructible<T>
+  {
+    Emplace(T(val));
   }
 
   template <typename... Args>

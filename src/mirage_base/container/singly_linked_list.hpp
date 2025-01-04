@@ -94,12 +94,10 @@ class SinglyLinkedListIterator {
     here_->next = new_node;
   }
 
-  void InsertAfter(const T& val) {
-    if constexpr (!std::copy_constructible<T>) {
-      MIRAGE_DCHECK(false);  // This type is supposed to be copyable.
-    } else {
-      EmplaceAfter(T(val));
-    }
+  void InsertAfter(const T& val)
+    requires std::copy_constructible<T>
+  {
+    EmplaceAfter(T(val));
   }
 
   T RemoveAfter() {
@@ -207,55 +205,49 @@ class SinglyLinkedList {
     return *this;
   }
 
-  SinglyLinkedList(const SinglyLinkedList& other) {
-    if constexpr (!std::copy_constructible<T>) {
-      MIRAGE_DCHECK(false);  // This type is supposed to be copyable.
-    } else {
-      auto iter = other.begin();
-      if (iter == other.end()) {
-        return;
-      }
-      Node* ptr = new Node(T(*iter));
-      head_ = ptr;
+  SinglyLinkedList(const SinglyLinkedList& other)
+    requires std::copy_constructible<T>
+  {
+    auto iter = other.begin();
+    if (iter == other.end()) {
+      return;
+    }
+    Node* ptr = new Node(T(*iter));
+    head_ = ptr;
+    ++iter;
+    while (iter != other.end()) {
+      Node* next = new Node(T(*iter));
+      ptr->next = next;
+      ptr = next;
       ++iter;
-      while (iter != other.end()) {
-        Node* next = new Node(T(*iter));
-        ptr->next = next;
-        ptr = next;
-        ++iter;
-      }
     }
   }
 
-  SinglyLinkedList& operator=(const SinglyLinkedList& other) {
-    if constexpr (!std::copy_constructible<T>) {
-      MIRAGE_DCHECK(false);  // This type is supposed to be copyable.
-    } else {
-      if (this != &other) {
-        Clear();
-        new (this) SinglyLinkedList(other);
-      }
+  SinglyLinkedList& operator=(const SinglyLinkedList& other)
+    requires std::copy_constructible<T>
+  {
+    if (this != &other) {
+      Clear();
+      new (this) SinglyLinkedList(other);
     }
     return *this;
   }
 
-  SinglyLinkedList(std::initializer_list<T> list) {
-    if constexpr (!std::copy_constructible<T>) {
-      MIRAGE_DCHECK(false);  // This type is supposed to be copyable.
-    } else {
-      if (list.size() == 0) {
-        return;
-      }
-      auto iter = list.begin();
-      Node* ptr = new Node(T(*iter));
-      head_ = ptr;
+  SinglyLinkedList(std::initializer_list<T> list)
+    requires std::copy_constructible<T>
+  {
+    if (list.size() == 0) {
+      return;
+    }
+    auto iter = list.begin();
+    Node* ptr = new Node(T(*iter));
+    head_ = ptr;
+    ++iter;
+    while (iter != list.end()) {
+      Node* next = new Node(T(*iter));
+      ptr->next = next;
+      ptr = next;
       ++iter;
-      while (iter != list.end()) {
-        Node* next = new Node(T(*iter));
-        ptr->next = next;
-        ptr = next;
-        ++iter;
-      }
     }
   }
 
@@ -268,12 +260,10 @@ class SinglyLinkedList {
     head_ = new_head;
   }
 
-  void PushHead(const T& val) {
-    if constexpr (!std::copy_constructible<T>) {
-      MIRAGE_DCHECK(false);  // This type is supposed to be copyable.
-    } else {
-      EmplaceHead(T(val));
-    }
+  void PushHead(const T& val)
+    requires std::copy_constructible<T>
+  {
+    EmplaceHead(T(val));
   }
 
   T RemoveHead() {
