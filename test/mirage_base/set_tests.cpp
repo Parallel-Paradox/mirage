@@ -63,3 +63,12 @@ TEST(SetTests, Iterate) {
   }
   EXPECT_EQ(expected, actual);
 }
+
+TEST(SetTests, RemoveBoundary) {
+  Set<int32_t> set = {0};
+  const int32_t removed = set.Remove(0).Unwrap();
+  const auto remove_again = set.Remove(0);
+  EXPECT_EQ(set.GetSize(), 0);
+  EXPECT_EQ(removed, 0);
+  EXPECT_FALSE(remove_again.IsValid());
+}

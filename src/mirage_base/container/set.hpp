@@ -247,9 +247,11 @@ class RBTree {
     return None();
   }
 
-  Optional<T> Remove(const T& val) {
+  Optional<T> Remove(const T& val) { return Remove(TryFind(val)); }
+
+  Optional<T> Remove(const ConstIterator& target) {
     // Find remove place
-    Node* val_ptr = const_cast<Node*>(TryFind(val).here_);
+    Node* val_ptr = const_cast<Node*>(target.here_);
     if (val_ptr == Node::Null()) {
       return Optional<T>::None();
     }
@@ -308,6 +310,12 @@ class RBTree {
     }
 
     // !left_exists && !right_exists && iter->color == Node::BLACK
+    if (val_ptr == root_) {
+      root_ = Node::Null();
+      delete val_ptr;
+      return rv;
+    }
+
     Node* iter = val_ptr;
     while (iter != root_) {
       parent = iter->parent;
@@ -373,7 +381,13 @@ class RBTree {
     return rv;
   }
 
-  ConstIterator TryFind(const T& val) const {
+  template <typename T1>
+  ConstIterator TryFind(const T1& val) const
+    requires requires(const T1& val, const T& entry) {
+      { val == entry } -> std::convertible_to<bool>;
+      { val < entry } -> std::convertible_to<bool>;
+    }
+  {
     Node* iter = root_;
     while (iter != Node::Null()) {
       if (val == iter->val.GetConstRef()) {
