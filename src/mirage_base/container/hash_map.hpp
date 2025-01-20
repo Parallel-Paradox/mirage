@@ -133,11 +133,6 @@ class HashMap {
     return Optional<Val>::None();
   }
 
-  Optional<Val> Remove(const Key& key) {
-    // TODO
-    return Optional<Val>::None();
-  }
-
   Val* TryFind(const Key& key) const {
     if (IsEmpty()) {
       return nullptr;
