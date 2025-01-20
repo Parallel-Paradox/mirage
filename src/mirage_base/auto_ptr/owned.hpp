@@ -8,8 +8,6 @@ namespace mirage::base {
 template <typename T>
 class Owned {
  public:
-  using Destructor = void (*)(T*);
-
   Owned() = default;
   Owned(const Owned&) = delete;
 
